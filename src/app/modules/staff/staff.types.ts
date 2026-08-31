@@ -7,6 +7,7 @@
 // aplicacion no puede tener dos definiciones que se desincronicen.
 export type { UserRole } from '../../core/auth.service';
 import type { UserRole } from '../../core/auth.service';
+import type { Paged } from '../../core/paged';
 
 export type UserStatus = 'ACTIVE' | 'INACTIVE';
 
@@ -19,17 +20,7 @@ export interface UserView {
   created_at: string;
 }
 
-export interface PageMetadata {
-  size: number;
-  number: number;
-  total_elements: number;
-  total_pages: number;
-}
-
-export interface PagedUsers {
-  content: UserView[];
-  page: PageMetadata;
-}
+export type PagedUsers = Paged<UserView>;
 
 export interface CreateUserDTO {
   full_name: string;
