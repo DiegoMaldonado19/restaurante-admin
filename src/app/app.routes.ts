@@ -96,6 +96,55 @@ export const routes: Routes = [
           import('./modules/inventory/pages/supply-form.page').then((m) => m.SupplyFormPage),
       },
       {
+        path: 'menu',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/dish-list.page').then((m) => m.DishListPage),
+      },
+      {
+        path: 'menu/nuevo',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/dish-form.page').then((m) => m.DishFormPage),
+      },
+      {
+        path: 'menu/categorias',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/dish-category.page').then((m) => m.DishCategoryPage),
+      },
+      {
+        path: 'menu/combos',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/combo-list.page').then((m) => m.ComboListPage),
+      },
+      {
+        path: 'menu/combos/nuevo',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/combo-form.page').then((m) => m.ComboFormPage),
+      },
+      {
+        path: 'menu/combos/:id',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/combo-form.page').then((m) => m.ComboFormPage),
+      },
+      {
+        path: 'menu/:id/editar',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/dish-form.page').then((m) => m.DishFormPage),
+      },
+      // Ficha al final de la rama: si estuviera antes, capturaria /menu/nuevo como :id.
+      {
+        path: 'menu/:id',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/menu/pages/dish-detail.page').then((m) => m.DishDetailPage),
+      },
+      {
         path: 'clientes',
         canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>

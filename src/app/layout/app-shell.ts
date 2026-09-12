@@ -13,8 +13,9 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { path: '/personal', label: 'Personal', roles: ['ADMIN'] },
   { path: '/inventario', label: 'Inventario', roles: ['ADMIN'] },
+  { path: '/menu', label: 'Menu', roles: ['ADMIN'] },
   { path: '/clientes', label: 'Clientes', roles: ['ADMIN'] },
-  // Proximos: /menu, /recetas, /restaurante, /salon, /reportes
+  // Proximos: /recetas, /restaurante, /salon, /reportes
 ];
 
 @Component({
