@@ -22,6 +22,18 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'menu/:id',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'menu/:id/editar',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'menu/combos/:id',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender,
   },
