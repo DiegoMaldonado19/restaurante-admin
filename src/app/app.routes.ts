@@ -169,6 +169,25 @@ export const routes: Routes = [
           import('./modules/dining/pages/reservation-list.page').then((m) => m.ReservationListPage),
       },
       {
+        path: 'recetas',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/recipes/pages/recipe-list.page').then((m) => m.RecipeListPage),
+      },
+      {
+        path: 'recetas/:dishId/versiones',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/recipes/pages/recipe-versions.page').then((m) => m.RecipeVersionsPage),
+      },
+      // Al final de la rama: si estuviera antes, capturaria /recetas/:id/versiones.
+      {
+        path: 'recetas/:dishId',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/recipes/pages/recipe-editor.page').then((m) => m.RecipeEditorPage),
+      },
+      {
         path: 'reportes',
         canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
