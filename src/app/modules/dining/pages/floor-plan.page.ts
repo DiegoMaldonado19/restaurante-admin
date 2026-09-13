@@ -34,8 +34,8 @@ const STATUS_BADGE_BG: Record<TableStatus, string> = {
 
 const ZONE_LABEL: Record<string, string> = {
   SALON: 'Salón',
-  TERRAZA: 'Terraza',
-  BARRA: 'Barra',
+  TERRACE: 'Terraza',
+  BAR: 'Barra',
 };
 
 @Component({
@@ -48,7 +48,7 @@ const ZONE_LABEL: Record<string, string> = {
           <h1 class="text-2xl font-semibold text-[#1F2422]">Salón</h1>
           <p class="mt-1 text-sm text-[#1F2422]/60">Estado de las mesas en tiempo real</p>
         </div>
-        
+        <a
           routerLink="/reservas"
           class="rounded-lg border border-[#1F2422]/15 px-4 py-2 text-sm text-[#1F2422]/70 hover:bg-white transition-colors"
         >
