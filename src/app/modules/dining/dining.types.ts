@@ -1,7 +1,7 @@
 export type ReservationStatus = 'BOOKED' | 'SEATED' | 'CANCELLED' | 'NO_SHOW';
 export type CancellationReason = 'CUSTOMER_CANCELLED' | 'NO_SHOW' | 'OTHER';
 export type TableStatus = 'FREE' | 'RESERVED' | 'OCCUPIED' | 'BILL_REQUESTED';
-export type TableZone = 'SALON' | 'TERRAZA' | 'BARRA';
+export type TableZone = 'SALON' | 'TERRACE' | 'BAR';
 
 export interface ReservationView {
   reservation_id: number;
