@@ -14,6 +14,7 @@ const NAV_ITEMS: NavItem[] = [
   { path: '/personal', label: 'Personal', roles: ['ADMIN'] },
   { path: '/inventario', label: 'Inventario', roles: ['ADMIN'] },
   { path: '/menu', label: 'Menu', roles: ['ADMIN'] },
+  { path: '/recetas', label: 'Recetas', roles: ['ADMIN'] },
   { path: '/clientes', label: 'Clientes', roles: ['ADMIN'] },
   { path: '/salon', label: 'Salón', roles: ['ADMIN'] },
   { path: '/reservas', label: 'Reservas', roles: ['ADMIN'] },
