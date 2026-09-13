@@ -169,6 +169,12 @@ export const routes: Routes = [
           import('./modules/dining/pages/reservation-list.page').then((m) => m.ReservationListPage),
       },
       {
+        path: 'reportes',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/reports/pages/reports.page').then((m) => m.ReportsPage),
+      },
+      {
         path: 'reservas/nuevo',
         canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
