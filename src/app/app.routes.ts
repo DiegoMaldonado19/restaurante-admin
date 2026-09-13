@@ -150,11 +150,36 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./modules/customers/pages/customer-list.page').then((m) => m.CustomerListPage),
       },
-      {
+            {
         path: 'clientes/:id',
         canActivate: [roleGuard('ADMIN')],
         loadComponent: () =>
           import('./modules/customers/pages/customer-detail.page').then((m) => m.CustomerDetailPage),
+      },
+      {
+        path: 'salon',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/dining/pages/floor-plan.page').then((m) => m.FloorPlanPage),
+      },
+      {
+        path: 'reservas',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/dining/pages/reservation-list.page').then((m) => m.ReservationListPage),
+      },
+      {
+        path: 'reservas/nuevo',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/dining/pages/reservation-form.page').then((m) => m.ReservationFormPage),
+      },
+      // Al final de la rama: si estuviera antes, capturaria /reservas/nuevo como :id.
+      {
+        path: 'reservas/:id',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/dining/pages/reservation-form.page').then((m) => m.ReservationFormPage),
       },
     ],
   },
