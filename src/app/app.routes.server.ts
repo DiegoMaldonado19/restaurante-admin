@@ -42,6 +42,14 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'recetas/:dishId',
+    renderMode: RenderMode.Client,
+  },
+  {
+    path: 'recetas/:dishId/versiones',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender,
   },
