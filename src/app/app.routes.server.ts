@@ -38,6 +38,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client,
   },
   {
+    path: 'restaurante/:id',
+    renderMode: RenderMode.Client,
+  },
+  {
     path: 'recetas/:dishId',
     renderMode: RenderMode.Client,
   },
