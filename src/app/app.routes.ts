@@ -206,6 +206,41 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./modules/dining/pages/reservation-form.page').then((m) => m.ReservationFormPage),
       },
+      {
+        path: 'restaurante',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/restaurant/pages/table-list.page').then((m) => m.TableListPage),
+      },
+      {
+        path: 'restaurante/nueva',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/restaurant/pages/table-form.page').then((m) => m.TableFormPage),
+      },
+      {
+        path: 'restaurante/impuestos',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/restaurant/pages/tax-settings.page').then((m) => m.TaxSettingsPage),
+      },
+      {
+        path: 'restaurante/puntos',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/restaurant/pages/loyalty-settings.page').then(
+            (m) => m.LoyaltySettingsPage,
+          ),
+      },
+      // Al final de la rama: si estuviera antes, capturaria /restaurante/nueva,
+      // /restaurante/impuestos y /restaurante/puntos como :id, igual que ya pasa con
+      // /inventario/:id y /menu/:id.
+      {
+        path: 'restaurante/:id',
+        canActivate: [roleGuard('ADMIN')],
+        loadComponent: () =>
+          import('./modules/restaurant/pages/table-form.page').then((m) => m.TableFormPage),
+      },
     ],
   },
   { path: '**', redirectTo: '' },
