@@ -57,3 +57,24 @@ export interface FloorPlanRow {
     guest_count: number;
   } | null;
 }
+
+export type WaitlistStatus = 'WAITING' | 'SEATED' | 'LEFT';
+
+export interface WaitlistEntryView {
+  waitlist_entry_id: number;
+  customer_id: number;
+  customer_name: string;
+  customer_phone: string;
+  guest_count: number;
+  status: WaitlistStatus;
+  restaurant_table_id: number | null;
+  table_account_id: number | null;
+  arrived_at: string;
+  seated_at: string | null;
+}
+
+export interface CreateWaitlistEntryRequest {
+  customer_name: string;
+  customer_phone: string;
+  guest_count: number;
+}

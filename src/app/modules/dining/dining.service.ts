@@ -9,7 +9,9 @@ import {
   CreateReservationRequest,
   UpdateReservationRequest,
   CancelReservationRequest,
+  CreateWaitlistEntryRequest,
   FloorPlanRow,
+  WaitlistEntryView,
 } from './dining.types';
 
 /** Spring Data envuelve las listas paginadas asi: { content: T[], page: {...} }. */
@@ -62,9 +64,59 @@ export class DiningService
     reload: () => this.reservationsPage.reload(),
   };
 
+  /**
+   * Mesa sobre la que se piden sugerencias de la lista de espera. Con valor, el backend
+   * filtra por capacidad: es la asignacion automatica al liberarse un cupo.
+   */
+  readonly suggestionTableId = signal<number | null>(null);
+
+  private readonly waitlistResource = httpResource<WaitlistEntryView[]>(
+    () => {
+      if (!this.isBrowser) return undefined;
+
+      const params = new URLSearchParams({ status: 'WAITING' });
+      const tableId = this.suggestionTableId();
+      if (tableId) params.set('fits_table_id', String(tableId));
+
+      return `${this.api.apiBaseUrl}/api/v1/waitlist-entries?${params.toString()}`;
+    },
+    { defaultValue: [] },
+  );
+
+  readonly waitlist = {
+    isLoading: this.waitlistResource.isLoading,
+    value: this.waitlistResource.value,
+    reload: () => this.waitlistResource.reload(),
+  };
+
+  async addToWaitlist(request: CreateWaitlistEntryRequest): Promise<WaitlistEntryView> {
+    const entry = await firstValueFrom(
+      this.http.post<WaitlistEntryView>(`${this.api.apiBaseUrl}/api/v1/waitlist-entries`, request),
+    );
+    this.waitlist.reload();
+    return entry;
+  }
+
+  async seatFromWaitlist(entryId: number, tableId: number): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${this.api.apiBaseUrl}/api/v1/waitlist-entries/${entryId}/seatings`, {
+        table_id: tableId,
+      }),
+    );
+    this.reloadAll();
+  }
+
+  async removeFromWaitlist(entryId: number): Promise<void> {
+    await firstValueFrom(
+      this.http.delete(`${this.api.apiBaseUrl}/api/v1/waitlist-entries/${entryId}`),
+    );
+    this.waitlist.reload();
+  }
+
   private reloadAll(): void {
     this.floorPlan.reload();
     this.reservations.reload();
+    this.waitlist.reload();
   }
 
   async findReservationById(reservationId: number): Promise<ReservationView> {

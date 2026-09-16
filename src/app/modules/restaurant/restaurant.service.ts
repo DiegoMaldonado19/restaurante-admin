@@ -1,5 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, signal, PLATFORM_ID} from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfig } from '../../api-config';
 import {
@@ -18,6 +19,8 @@ import {
 export class RestaurantService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(ApiConfig);
+  /** En el servidor no hay token, y prerenderizar sin el deja la pantalla en estado de error. */
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly zoneFilter = signal<TableZone | ''>('');
   readonly statusFilter = signal<TableStatus | ''>('');
@@ -25,6 +28,7 @@ export class RestaurantService {
 
   /** Se re-pide solo cuando cambia alguno de los filtros leidos dentro de la funcion. */
   readonly tables = httpResource<PagedTables>(() => {
+    if (!this.isBrowser) return undefined;
     const params = new URLSearchParams();
 
     if (this.zoneFilter()) {
@@ -45,7 +49,7 @@ export class RestaurantService {
    * puntos" para que ninguna de las dos pantallas pise el par de columnas que edita la
    * otra: PUT /settings reemplaza la fila completa (Analisis-Solucion-Restaurante-Front §3.4).
    */
-  readonly setting = httpResource<RestaurantSettingView>(() => this.settingsUrl());
+  readonly setting = httpResource<RestaurantSettingView>(() => (this.isBrowser ? this.settingsUrl() : undefined));
 
   findById(tableId: number): Promise<RestaurantTableView> {
     return firstValueFrom(this.http.get<RestaurantTableView>(`${this.tablesUrl()}/${tableId}`));

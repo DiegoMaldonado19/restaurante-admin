@@ -1,5 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, signal, PLATFORM_ID} from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfig } from '../../api-config';
 import {
@@ -28,6 +29,8 @@ import {
 export class MenuService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(ApiConfig);
+  /** En el servidor no hay token, y prerenderizar sin el deja la pantalla en estado de error. */
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   // Filtros del catalogo de platillos: los lee la funcion de `dishes`.
   readonly categoryFilter = signal<number | ''>('');
@@ -39,6 +42,7 @@ export class MenuService {
 
   /** Se re-pide solo cuando cambia alguno de los filtros leidos dentro de la funcion. */
   readonly dishes = httpResource<PagedDishes>(() => {
+    if (!this.isBrowser) return undefined;
     const params = new URLSearchParams();
 
     if (this.categoryFilter()) {
@@ -57,7 +61,7 @@ export class MenuService {
     return `${this.dishesUrl()}?${params.toString()}`;
   });
 
-  readonly categories = httpResource<DishCategoryView[]>(() => this.categoriesUrl());
+  readonly categories = httpResource<DishCategoryView[]>(() => (this.isBrowser ? this.categoriesUrl() : undefined));
 
   /**
    * Lista completa de platillos activos para los selectores del combo. Es aparte de
@@ -65,11 +69,12 @@ export class MenuService {
    * ofrece la pagina visible es un error dificil de ver. Tope de 100 (maximo de pagina del
    * backend); si el menu pasa de 100 platillos, esto se cambia por un autocompletado.
    */
-  readonly dishPicker = httpResource<PagedDishes>(
-    () => `${this.dishesUrl()}?active=true&size=100&sort=name,asc`,
+  readonly dishPicker = httpResource<PagedDishes>(() =>
+    this.isBrowser ? `${this.dishesUrl()}?active=true&size=100&sort=name,asc` : undefined,
   );
 
   readonly combos = httpResource<ComboView[]>(() => {
+    if (!this.isBrowser) return undefined;
     const params = new URLSearchParams();
 
     if (this.comboActiveFilter() !== '') {
