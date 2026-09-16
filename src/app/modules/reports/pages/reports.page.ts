@@ -8,7 +8,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { ReportsService } from '../reports.service';
+import { ExportFormat, ReportsService } from '../reports.service';
 import { InventoryService } from '../../inventory/inventory.service';
 import { MenuService } from '../../menu/menu.service';
 import { messageFor } from '../../../core/error-messages';
@@ -42,11 +42,19 @@ import { ColumnFormat, REPORT_SPECS, ReportChart, ReportRow, ZONE_LABELS } from 
           </button>
           <button
             type="button"
-            class="rounded-md bg-slate-900 px-3 py-2 text-sm text-white hover:bg-slate-700 disabled:opacity-40"
+            class="rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 disabled:opacity-40"
             [disabled]="downloading()"
-            (click)="exportCsv()"
+            (click)="exportAs('csv')"
           >
             Exportar CSV
+          </button>
+          <button
+            type="button"
+            class="rounded-md bg-slate-900 px-3 py-2 text-sm text-white hover:bg-slate-700 disabled:opacity-40"
+            [disabled]="downloading()"
+            (click)="exportAs('xlsx')"
+          >
+            Exportar Excel
           </button>
         </div>
       </header>
@@ -332,12 +340,12 @@ export class ReportsPage implements OnDestroy {
     }
   }
 
-  protected async exportCsv(): Promise<void> {
+  protected async exportAs(format: ExportFormat): Promise<void> {
     this.downloading.set(true);
     this.feedback.set(null);
 
     try {
-      await this.reports.downloadCsv();
+      await this.reports.download(format);
     } catch (error) {
       this.feedback.set(messageFor(error));
     } finally {

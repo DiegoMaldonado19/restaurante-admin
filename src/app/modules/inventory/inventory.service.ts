@@ -1,5 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, signal, PLATFORM_ID} from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfig } from '../../api-config';
 import {
@@ -21,6 +22,8 @@ import {
 export class InventoryService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(ApiConfig);
+  /** En el servidor no hay token, y prerenderizar sin el deja la pantalla en estado de error. */
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly categoryFilter = signal<number | ''>('');
   readonly search = signal('');
@@ -33,6 +36,7 @@ export class InventoryService {
 
   /** Se re-pide solo cuando cambia alguno de los filtros leidos dentro de la funcion. */
   readonly supplies = httpResource<PagedSupplies>(() => {
+    if (!this.isBrowser) return undefined;
     const params = new URLSearchParams();
 
     if (this.categoryFilter()) {
@@ -55,15 +59,16 @@ export class InventoryService {
    * ponytail: tope de 100, que es el maximo de pagina del backend. Si el restaurante
    * pasa de 100 insumos, esto se cambia por un campo de busqueda con autocompletado.
    */
-  readonly pickerSupplies = httpResource<PagedSupplies>(
-    () => `${this.suppliesUrl()}?active=true&size=100&sort=name,asc`,
+  readonly pickerSupplies = httpResource<PagedSupplies>(() =>
+    this.isBrowser ? `${this.suppliesUrl()}?active=true&size=100&sort=name,asc` : undefined,
   );
 
   readonly categories = httpResource<SupplyCategoryView[]>(
-    () => `${this.api.apiBaseUrl}/api/v1/supply-categories`,
+    () => (this.isBrowser ? `${this.api.apiBaseUrl}/api/v1/supply-categories` : undefined),
   );
 
   readonly kardex = httpResource<PagedStockMovements>(() => {
+    if (!this.isBrowser) return undefined;
     const params = new URLSearchParams();   // el orden descendente lo pone el endpoint
 
     if (this.kardexSupply()) {

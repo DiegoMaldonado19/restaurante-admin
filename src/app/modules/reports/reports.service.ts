@@ -19,6 +19,9 @@ function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** Los dos formatos de descarga que aceptan los nueve reportes. */
+export type ExportFormat = 'csv' | 'xlsx';
+
 @Injectable({ providedIn: 'root' })
 export class ReportsService {
   private readonly http = inject(HttpClient);
@@ -62,12 +65,12 @@ export class ReportsService {
   );
 
   /**
-   * Descarga el CSV con HttpClient y no con un enlace directo: el endpoint exige la
-   * cabecera Authorization, que un <a href> no puede mandar.
+   * Descarga con HttpClient y no con un enlace directo: el endpoint exige la cabecera
+   * Authorization, que un <a href> no puede mandar.
    */
-  async downloadCsv(): Promise<void> {
+  async download(format: ExportFormat): Promise<void> {
     const blob = await firstValueFrom(
-      this.http.get(`${this.api.apiBaseUrl}/api/v1/reports/${this.query('csv')}`, {
+      this.http.get(`${this.api.apiBaseUrl}/api/v1/reports/${this.query(format)}`, {
         responseType: 'blob',
       }),
     );
@@ -76,14 +79,14 @@ export class ReportsService {
     const link = document.createElement('a');
 
     link.href = url;
-    link.download = `${this.selectedKey()}-${this.from()}-${this.to()}.csv`;
+    link.download = `${this.selectedKey()}-${this.from()}-${this.to()}.${format}`;
     link.click();
 
     URL.revokeObjectURL(url);
   }
 
   /** Arma la ruta con los filtros que el reporte elegido declara, y solo con esos. */
-  private query(format?: 'csv'): string {
+  private query(format?: ExportFormat): string {
     const spec = this.spec();
     const params = new URLSearchParams();
 

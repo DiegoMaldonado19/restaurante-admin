@@ -1,5 +1,6 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, signal, PLATFORM_ID} from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfig } from '../../api-config';
 import {
@@ -15,10 +16,13 @@ import {
 export class CustomersService {
   private readonly http = inject(HttpClient);
   private readonly api = inject(ApiConfig);
+  /** En el servidor no hay token, y prerenderizar sin el deja la pantalla en estado de error. */
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly search = signal('');
 
   readonly customers = httpResource<PagedCustomers>(() => {
+    if (!this.isBrowser) return undefined;
     const params = new URLSearchParams();
 
     if (this.search().trim()) {
